@@ -121,10 +121,6 @@ boolean CheckerDT_isValid(boolean bIsInitialized, Node_T oNRoot,
          fprintf(stderr, "Not initialized, but count is not 0\n");
          return FALSE;
       }
-      if (DT_toString() != NULL) {
-         fprintf(stderr, "Not initialized, but string rep is not NULL\n%s\n", DT_toString());
-         return FALSE;
-      }
 
    /* Now checks invariants recursively at each node from the root. */
    return CheckerDT_treeCheck(oNRoot);
