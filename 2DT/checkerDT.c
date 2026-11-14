@@ -53,12 +53,12 @@ boolean CheckerDT_Node_isValid(Node_T oNNode) {
 
       /*parent must be linked to child with given path*/
       if (!Node_hasChild(oNParent, oPNPath, &ulChildID)) {
-         fprintf(stderr, "Parent does not have child linked\n");
+         fprintf(stderr, "Parent does not have child linked with path\n");
          return FALSE;
       }
       /*parent must be linked to child with given ulChildID*/
       if (Node_getChild(oNParent, ulChildID, &oNResult) != SUCCESS) {
-         fprintf(stderr, "Parent does not have children linked\n");
+         fprintf(stderr, "Parent does not have child linked with ID\n");
          return FALSE;
       }
       /*parent must have one child with exact path*/
@@ -119,6 +119,10 @@ boolean CheckerDT_isValid(boolean bIsInitialized, Node_T oNRoot,
    if(!bIsInitialized)
       if(ulCount != 0) {
          fprintf(stderr, "Not initialized, but count is not 0\n");
+         return FALSE;
+      }
+      if (DT_toString() != NULL) {
+         fprintf(stderr, "Not initialized, but string rep is not NULL\n%s\n", DT_toString());
          return FALSE;
       }
 
