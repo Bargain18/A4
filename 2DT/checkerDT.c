@@ -53,17 +53,19 @@ boolean CheckerDT_Node_isValid(Node_T oNNode) {
 
       /*parent must be linked to child with given path*/
       if (!Node_hasChild(oNParent, oPNPath, &ulChildID)) {
-         fprintf(stderr, "Parent does not have child linked with path\n");
+         fprintf(stderr, "Parent does not have child linked with path %s\n",
+            Path_getPathname(oPNPath));
          return FALSE;
       }
       /*parent must be linked to child with given ulChildID*/
       if (Node_getChild(oNParent, ulChildID, &oNResult) != SUCCESS) {
-         fprintf(stderr, "Parent does not have child linked with ID\n");
+         fprintf(stderr, "Parent does not have child linked with ID %lu\n", ulChildID);
          return FALSE;
       }
       /*parent must have one child with exact path*/
       if (oNResult != oNNode) {
-         fprintf(stderr, "Parent has more than one child with same path\n");
+         fprintf(stderr, "Parent has more than one child with same path %s\n",
+            Path_getPathname(oPNPath));
          return FALSE;
       }
    }
