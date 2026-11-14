@@ -24,17 +24,46 @@ boolean CheckerDT_Node_isValid(Node_T oNNode) {
       return FALSE;
    }
 
-   /* Sample check: parent's path must be the longest possible
-      proper prefix of the node's path */
    oNParent = Node_getParent(oNNode);
    if(oNParent != NULL) {
+      size_t ulChildID;
+      Node_T oNResult;
       oPNPath = Node_getPath(oNNode);
       oPPPath = Node_getPath(oNParent);
 
+      /*node cannot have null path*/
+      if (oPNPath == NULL) {
+         fprintf(stderr, "Path is NULL\n");
+         return FALSE;
+      }
+      /*a parent node, if exists cannot have null path*/
+      if (oPPPath == NULL) {
+         fprintf(stderr, "Parent Path is NULL\n");
+         return FALSE;
+      }
+
+      /* Sample check: parent's path must be the longest possible
+         proper prefix of the node's path */
       if(Path_getSharedPrefixDepth(oPNPath, oPPPath) !=
          Path_getDepth(oPNPath) - 1) {
          fprintf(stderr, "P-C nodes don't have P-C paths: (%s) (%s)\n",
                  Path_getPathname(oPPPath), Path_getPathname(oPNPath));
+         return FALSE;
+      }
+
+      /*parent must be linked to child with given path*/
+      if (!Node_hasChild(oNParent, oPNPath, &ulChildID)) {
+         fprintf(stderr, "Parent does not have child linked\n");
+         return FALSE;
+      }
+      /*parent must be linked to child with given ulChildID*/
+      if (Node_getChild(oNParent, ulChildID, &oNResult) != SUCCESS) {
+         fprintf(stderr, "Parent does not have children linked\n");
+         return FALSE;
+      }
+      /*parent must have one child with exact path*/
+      if (oNResult != oNNode) {
+         fprintf(stderr, "Parent has more than one child with same path\n");
          return FALSE;
       }
    }
