@@ -70,6 +70,8 @@ boolean CheckerDT_Node_isValid(Node_T oNNode) {
       }
    }
 
+
+
    return TRUE;
 }
 
@@ -84,6 +86,7 @@ boolean CheckerDT_Node_isValid(Node_T oNNode) {
 */
 static boolean CheckerDT_treeCheck(Node_T oNNode) {
    size_t ulIndex;
+   Node_T oNPrev = NULL;
 
    if(oNNode!= NULL) {
 
@@ -102,6 +105,18 @@ static boolean CheckerDT_treeCheck(Node_T oNNode) {
             fprintf(stderr, "getNumChildren claims more children than getChild returns\n");
             return FALSE;
          }
+
+         /* children must be in strictly increasing lexicographic order */
+         if(oNPrev != NULL &&
+            Path_comparePath(Node_getPath(oNPrev),
+                             Node_getPath(oNChild)) >= 0) {
+            fprintf(stderr, "Children of %s out of order: (%s) before (%s)\n",
+                    Path_getPathname(Node_getPath(oNNode)),
+                    Path_getPathname(Node_getPath(oNPrev)),
+                    Path_getPathname(Node_getPath(oNChild)));
+            return FALSE;
+         }
+         oNPrev = oNChild;
 
          /* if recurring down one subtree results in a failed check
             farther down, passes the failure back up immediately */
