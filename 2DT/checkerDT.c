@@ -111,7 +111,7 @@ static boolean CheckerDT_treeCheck(Node_T oNNode, size_t *pulActual) {
          /* children must be in strictly increasing lexicographic order */
          if(oNPrev != NULL &&
             Path_comparePath(Node_getPath(oNPrev),
-                             Node_getPath(oNChild)) >= 0) {
+                             Node_getPath(oNChild)) > 0) {
             fprintf(stderr, "Children of %s out of order: (%s) before (%s)\n",
                     Path_getPathname(Node_getPath(oNNode)),
                     Path_getPathname(Node_getPath(oNPrev)),
