@@ -162,10 +162,17 @@ the error manifests itself or is "noticed" by the client.
 What are your critiques of the given DT implementations, as
 specified in Step 2.5?
 
+Node_getPath returns its own path object, which can then be freed
+    within dt, which would violate encapsulation
+Upon first reading, Node_getChild sounds like it uses a hash to generate
+    IDs but it is implemented as direct array access, meaning users can
+    access nodes as they see fit without necessarily knowing the exact
+    path, which would violate abstraction
+Node_toString is never used but could be in DT_toString
+DT_findNode is only used to verify contains/rm, but that could also
+    be done via traversePath and checking the returned nodes' path
+    (not strong critique)
 As a whole, dt and nodeDT have strong cohesion and weak coupling, with dt only
     calling get/get-equivalent methods from nodeDT
-Node_toString is never used but could be for a traversal during DT_toString
-DT_findNode is only used to verify contains/rm, but that could also be done
-    via traversePath and checking the returned nodes' path (not strong critique)
 
 ------------------------------------------------------------------------
