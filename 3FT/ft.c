@@ -584,6 +584,7 @@ int FT_rmFile(const char *pcPath) {
 */
 void *FT_getFileContents(const char *pcPath) {
    int iStatus;
+   size_t ulLength;
    FileNode_T oFNFound = NULL;
 
    assert(pcPath != NULL);
@@ -592,7 +593,7 @@ void *FT_getFileContents(const char *pcPath) {
    if(iStatus != SUCCESS)
       return NULL;
 
-   return FileNode_getContents(oFNFound);
+   return FileNode_getContents(oFNFound, &ulLength);
 }
 
 /*
@@ -612,7 +613,7 @@ void *FT_replaceFileContents(const char *pcPath, void *pvNewContents,
    if(iStatus != SUCCESS)
       return iStatus;
 
-   return FileNode_replaceContents(oFNFound, pvNewContents);
+   return FileNode_replaceContents(oFNFound, pvNewContents, ulNewLength);
 }
 
 /*
@@ -633,6 +634,10 @@ void *FT_replaceFileContents(const char *pcPath, void *pvNewContents,
 */
 int FT_stat(const char *pcPath, boolean *pbIsFile, size_t *pulSize) {
 
+   dirnode to closest point
+   check if the dir is it
+   check if the dirs files are it
+   if so, steal contents and size
 }
 
 /*

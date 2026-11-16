@@ -36,11 +36,12 @@ Path_T FileNode_getPath(Node_T oFNNode);
 DirNode_T FileNode_getParent(FileNode_T oFNNode);
 
 /* Returns a pointer to the file contents of oFNNode */
-void *FileNode_getContents(FileNode_T oFNNode);
+void *FileNode_getContents(FileNode_T oFNNode, size_t* pulLength);
 
 /* Replaces file contents of oFNNode with newContents
    Returns original file contents */
-void *FileNode_replaceContents(FileNode_T oFNNode, void* pvNewContents);
+void *FileNode_replaceContents(FileNode_T oFNNode, void* pvNewContents
+    size_t ulNewLength);
 
 /*
   Compares oFNFirst and oFNSecond lexicographically based on their paths.

@@ -50,7 +50,8 @@ int DirNode_compareString(const FileNode_T oFNFirst,
                  or oDNParent is NULL but oPPath is not of depth 1
   * ALREADY_IN_TREE if oDNParent already has a file with this path
 */
-int FileNode_new(Path_T oPPath, DirNode_T oDNParent, void* pvContents, size_t ulContentsLength, Node_T *poFNResult) {
+int FileNode_new(Path_T oPPath, DirNode_T oDNParent, void* pvContents,
+                     size_t ulContentsLength, Node_T *poFNResult) {
    struct filenode *psNew;
    Path_T oPParentPath = NULL;
    Path_T oPNewPath = NULL;
@@ -185,19 +186,25 @@ DirNode_T FileNode_getParent(FileNode_T oFNNode) {
    return oFNNode->oDNParent;
 }
 
-/* Returns a pointer to the file contents of oFNNode */
-void *FileNode_getContents(FileNode_T oFNNode) {
+/* Returns a pointer to the file contents of oFNNode
+   Fills in ulLength with length of file contents */
+void *FileNode_getContents(FileNode_T oFNNode, size_t* pulLength) {
    assert(oFNNode != NULL);
+   assert(pulLength != NULL);
+
+   *pulLength = oFNNode->ulContentsLength;
    return oFNNode->pvContents;
 }
 
 /* Replaces file contents of oFNNode with newContents
    Returns original file contents */
-void *FileNode_replaceContents(FileNode_T oFNNode, void* pvNewContents) {
+void *FileNode_replaceContents(FileNode_T oFNNode, void* pvNewContents
+      size_t ulNewLength) {
    void* pvOrigContents;
    assert(oFNNode != NULL);
 
    pvOrigContents = oFNNode->pvContents;
+   oFNNode->ulContentsLength = ulNewLength;
    oFNNode->pvContents = pvNewContents;
    return pvOrigContents;
 }
