@@ -257,7 +257,7 @@ int FT_insertDir(const char *pcPath) {
       return iStatus;
 
    /* find the closest ancestor of oPPath already in the tree */
-   iStatus= FT_traverseDirPath(oPPath, &oNCurr);
+   iStatus= FT_traverseDirPath(oPPath, &oDNCurr);
    if(iStatus != SUCCESS)
    {
       Path_free(oPPath);
@@ -285,7 +285,7 @@ int FT_insertDir(const char *pcPath) {
       }
    }
 
-   /* starting at oNCurr, build rest of the path one level at a time */
+   /* starting at oDNCurr, build rest of the path one level at a time */
    while(ulIndex <= ulDepth) {
       Path_T oPPrefix = NULL;
       DirNode_T oDNNewNode = NULL;
@@ -402,7 +402,137 @@ int FT_rmDir(const char *pcPath) {
 */
 int FT_insertFile(const char *pcPath, void *pvContents,
                   size_t ulLength) {
+   int iStatus;
+   Path_T oPPath = NULL;
+   FileNode_T oFNResult;
+   DirNode_T oDNFirstNew = NULL;
+   DirNode_T oDNCurr = NULL;
+   size_t ulDepth, ulIndex;
+   size_t ulNewNodes = 0;
 
+   assert(pcPath != NULL);
+
+   /* validate pcPath and generate a Path_T for it */
+   if(!bIsInitialized)
+      return INITIALIZATION_ERROR;
+
+   iStatus = Path_new(pcPath, &oPPath);
+   if(iStatus != SUCCESS)
+      return iStatus;
+
+   /* find the closest ancestor of oPPath already in the tree */
+   iStatus= FT_traverseDirPath(oPPath, &oDNCurr);
+   if(iStatus != SUCCESS)
+   {
+      Path_free(oPPath);
+      return iStatus;
+   }
+
+   /* no ancestor node found, so if root is not NULL,
+   pcPath isn't underneath root. */
+   if(oDNCurr == NULL && oDNRoot != NULL) {
+      Path_free(oPPath);
+      return CONFLICTING_PATH;
+   }
+
+   ulDepth = Path_getDepth(oPPath);
+   /* no ancestor root found and path has depth 1,
+      file cannot be root  */
+   if(oDNCurr == NULL && ulDepth == 1) {
+      Path_free(oPPath);
+      return CONFLICTING_PATH;
+   }
+
+   if(oDNCurr == NULL) /* new root! */
+      ulIndex = 1;
+   else {
+      ulIndex = Path_getDepth(DirNode_getPath(oDNCurr))+1;
+
+      /* oDNCurr is the node we're trying to insert */
+      if(ulIndex == ulDepth+1 && !Path_comparePath(oPPath,
+                                       DirNode_getPath(oDNCurr))) {
+         Path_free(oPPath);
+         return ALREADY_IN_TREE;
+                                       }
+   }
+
+   /* starting at oDNCurr, build rest of the path one level at a time */
+   while(ulIndex < ulDepth) {
+      Path_T oPPrefix = NULL;
+      DirNode_T oDNNewNode = NULL;
+      boolean isFile;
+      size_t ulID;
+
+      /* generate a Path_T for this level */
+      iStatus = Path_prefix(oPPath, ulIndex, &oPPrefix);
+      if(iStatus != SUCCESS) {
+         Path_free(oPPath);
+         if(oDNFirstNew != NULL)
+            (void) DirNode_free(oDNFirstNew);
+         return iStatus;
+      }
+
+      /* check if the generated Path_T is a file */
+      isFile = DirNode_hasFile(oDNCurr, oPPrefix, &ulID);
+      if (isFile) {
+         Path_free(oPPath);
+         Path_free(oPPrefix);
+         if (oDNFirstNew != NULL)
+            (void) DirNode_free(oDNFirstNew);
+         /* Proper prefix existing means a file exists along path */
+         if (ulIndex < ulDepth)
+            return NOT_A_DIRECTORY;
+         /* However, if full path is file, this is a different error*/
+         else
+            return ALREADY_IN_TREE;
+      }
+
+      /* insert the new node for this level */
+      iStatus = DirNode_new(oPPrefix, oDNCurr, &oDNNewNode);
+      if(iStatus != SUCCESS) {
+         Path_free(oPPath);
+         Path_free(oPPrefix);
+         if(oDNFirstNew != NULL)
+            (void) DirNode_free(oDNFirstNew);
+         return iStatus;
+      }
+
+      /* set up for next level */
+      Path_free(oPPrefix);
+      oDNCurr = oDNNewNode;
+      ulNewNodes++;
+      if(oDNFirstNew == NULL)
+         oDNFirstNew = oDNCurr;
+      ulIndex++;
+   }
+
+   /* at final level, path is simply oPPath */
+   /* check if file or directory already exists */
+   if (DirNode_hasChild(oDNCurr, oPPath, &ulID) ||
+      DirNode_hasFile(oDNCurr, oPPath, &ulID)) {
+      Path_free(oPPath);
+      if(oDNFirstNew != NULL)
+         (void) DirNode_free(oDNFirstNew);
+      return ALREADY_IN_TREE;
+   }
+
+   /* Insert new file at final level */
+   iStatus = FileNode_new(oPPath, oDNCurr, &oFNResult);
+   if(iStatus != SUCCESS) {
+      Path_free(oPPath);
+      if(oDNFirstNew != NULL)
+         (void) DirNode_free(oDNFirstNew);
+      return iStatus;
+   }
+
+   ulNewNodes++;
+   Path_free(oPPath);
+   /* update DT state variables to reflect insertion */
+   if(oDNRoot == NULL)
+      oDNRoot = oDNFirstNew;
+   ulCount += ulNewNodes;
+
+   return SUCCESS;
 }
 
 /*
