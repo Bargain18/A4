@@ -15,7 +15,7 @@ struct dirnode {
    /* the object corresponding to the node's absolute path */
    Path_T oPPath;
    /* this node's parent */
-   DirNode_T oNParent;
+   DirNode_T oDNParent;
    /* the object containing links to this dirNode's children */
    DynArray_T oDChildren;
    /* the object containing links to this dirNode's files*/
@@ -24,16 +24,16 @@ struct dirnode {
 
 
 /*
-  Links new child oNChild into oNParent's children array at index
+  Links new child oDNChild into oDNParent's children array at index
   ulIndex. Returns SUCCESS if the new child was added successfully,
-  or  MEMORY_ERROR if allocation fails adding oNChild to the array.
+  or  MEMORY_ERROR if allocation fails adding D to the array.
 */
 static int DirNode_addChild(DirNode_T oDNParent, DirNode_T oDNChild,
                          size_t ulIndex) {
    assert(oDNParent != NULL);
    assert(oDNChild != NULL);
 
-   if(DynArray_addAt(oNParent->oDChildren, ulIndex, oNChild))
+   if(DynArray_addAt(oDNParent->oDChildren, ulIndex, oDNChild))
       return SUCCESS;
    else
       return MEMORY_ERROR;
@@ -55,15 +55,15 @@ static int DirNode_compareString(const DNode_T oDNFirst,
 
 
 /*
-  Creates a new node with path oPPath and parent oNParent.  Returns an
+  Creates a new node with path oPPath and parent oDNParent.  Returns an
   int SUCCESS status and sets *poNResult to be the new node if
   successful. Otherwise, sets *poNResult to NULL and returns status:
   * MEMORY_ERROR if memory could not be allocated to complete request
-  * CONFLICTING_PATH if oNParent's path is not an ancestor of oPPath
+  * CONFLICTING_PATH if oDNParent's path is not an ancestor of oPPath
   * NO_SUCH_PATH if oPPath is of depth 0
-                 or oNParent's path is not oPPath's direct parent
-                 or oNParent is NULL but oPPath is not of depth 1
-  * ALREADY_IN_TREE if oNParent already has a child with this path
+                 or oDNParent's path is not oPPath's direct parent
+                 or oDNParent is NULL but oPPath is not of depth 1
+  * ALREADY_IN_TREE if oDNParent already has a child with this path
 */
 int DirNode_new(Path_T oPPath, DirNode_T oDNParent, DirNode_T *poDNResult){
    struct dirnode *psNew;
@@ -117,7 +117,7 @@ int DirNode_new(Path_T oPPath, DirNode_T oDNParent, DirNode_T *poDNResult){
       }
 
       /* parent must not already have child with this path */
-      if(Node_hasChild(oNParent, oPPath, &ulIndex)) {
+      if(Node_hasChild(oDNParent, oPPath, &ulIndex)) {
          Path_free(psNew->oPPath);
          free(psNew);
          *poDNResult = NULL;
@@ -212,7 +212,7 @@ boolean DirNode_hasChild(DirNode_T oDNParent, Path_T oPPath,
    assert(oPPath != NULL);
    assert(pulChildID != NULL);
 
-   /* *pulChildID is the index into oNParent->oDChildren */
+   /* *pulChildID is the index into oDNParent->oDChildren */
    return DynArray_bsearch(oDNParent->oDChildren,
             (char*) Path_getPathname(oPPath), pulChildID,
             (int (*)(const void*,const void*)) Node_compareString);
@@ -230,7 +230,7 @@ int DirNode_getChild(DirNode_T oDNParent, size_t ulChildID,
    assert(oDNParent != NULL);
    assert(poDNResult != NULL);
 
-   /* ulChildID is the index into oNParent->oDChildren */
+   /* ulChildID is the index into oDNParent->oDChildren */
    if(ulChildID >= DirNode_getNumChildren(oDNParent)) {
       *poDNResult = NULL;
       return NO_SUCH_PATH;

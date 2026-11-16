@@ -11,11 +11,9 @@
 
 #include "dynarray.h"
 #include "path.h"
-#include "nodeFT.h"
+#include "fileNode.h"
+#include "dirNode.h"
 #include "ft.h"
-
-/*denoting the type of a given node*/
-enum nodeType {FILE, DIRECTORY};
 
 /*
   A  Tree is a representation of a hierarchy of directories and files,

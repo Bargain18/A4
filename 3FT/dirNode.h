@@ -8,12 +8,13 @@
 #include <stddef.h>
 #include "a4def.h"
 #include "path.h"
+#include "fileNode.h"
 
 /* A DirNode_T is a dirNode in a File Tree */
 typedef struct dirNode *DirNode_T;
 
 /*
-  Creates a new node in the File Tree, with path oPPath and
+  Creates a new dirNode in the File Tree, with path oPPath and
   parent oDNParent. Returns an int SUCCESS status and sets *poDNResult
   to be the new node if successful. Otherwise, sets *poDNResult to NULL
   and returns status:
@@ -58,7 +59,15 @@ size_t DirNode_getNumChildren(DirNode_T oDNParent);
   * NO_SUCH_PATH if ulChildID is not a valid child for oDNParent
 */
 int DirNode_getChild(DirNode_T oNParent, size_t ulChildID,
-                  Node_T *poDNResult);
+                  DirNode_T *poDNResult);
+
+boolean DirNode_hasFile(DirNode_T oDNParent, Path_T oPPath,
+                         size_t *pulFileID);
+
+size_t DirNode_getNumFiles(DirNode_T oDNParent);
+
+int DirNode_getFile(DirNode_T oDNParent, size_t ulFileID,
+                  FileNode_T *poFNResult);
 
 /*
   Returns a the parent node of oDNNode.
