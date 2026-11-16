@@ -24,12 +24,12 @@ typedef struct dirNode *DirNode_T;
                  or oDNParent is NULL but oPPath is not of depth 1
   * ALREADY_IN_TREE if oDNParent already has a child with this path
 */
-int DirNode_new(Path_T oPPath, DirNode_T oDNParent, DirNode_T *poDNResult, );
+int DirNode_new(Path_T oPPath, DirNode_T oDNParent, DirNode_T *poDNResult);
 
 /*
   Destroys and frees all memory allocated for the subtree rooted at
   oDNNode, i.e., deletes this node and all its descendents. Returns the
-  number of nodes deleted.
+  number of dirNodes and fileNodes deleted.
 */
 size_t DirNode_free(DirNode_T oDNNode);
 
@@ -45,7 +45,7 @@ Path_T DirNode_getPath(DirNode_T oDNNode);
   such a child, stores in *pulChildID the identifier that such a
   child _would_ have if inserted.
 */
-boolean DirNode_hasChild(Node_T oDNParent, Path_T oPPath,
+boolean DirNode_hasChild(DirNode_T oDNParent, Path_T oPPath,
                          size_t *pulChildID);
 
 /* Returns the number of children that oNParent has. */
@@ -71,7 +71,7 @@ DirNode_T DirNode_getParent(DirNode_T oDNNode);
   Returns <0, 0, or >0 if oDNFirst is "less than", "equal to", or
   "greater than" oDNSecond, respectively.
 */
-int DirNode_compare(Node_T oDNFirst, Node_T oDNSecond);
+int DirNode_compare(DirNode_T oDNFirst, DirNode_T oDNSecond);
 
 /*
   Returns a string representation for oDNNode, or NULL if
