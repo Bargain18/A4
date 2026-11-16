@@ -61,11 +61,27 @@ size_t DirNode_getNumChildren(DirNode_T oDNParent);
 int DirNode_getChild(DirNode_T oNParent, size_t ulChildID,
                   DirNode_T *poDNResult);
 
+/*
+  Returns TRUE if oDNParent has a file with path oPPath. Returns
+  FALSE if it does not.
+
+  If oDNParent has such a file, stores in *pulFileID the file's
+  identifier (as used in DIrNode_getFile). If oDNParent does not have
+  such a file, stores in *pulFileID the identifier that such a
+  file _would_ have if inserted.
+*/
 boolean DirNode_hasFile(DirNode_T oDNParent, Path_T oPPath,
                          size_t *pulFileID);
 
+/* Returns the number of files that oNParent has. */
 size_t DirNode_getNumFiles(DirNode_T oDNParent);
 
+/*
+  Returns an int SUCCESS status and sets *poDNResult to be the file
+  node of oDNParent with identifier ulFileID, if one exists.
+  Otherwise, sets *poDNResult to NULL and returns status:
+  * NO_SUCH_PATH if ulChildID is not a valid child for oDNParent
+*/
 int DirNode_getFile(DirNode_T oDNParent, size_t ulFileID,
                   FileNode_T *poFNResult);
 

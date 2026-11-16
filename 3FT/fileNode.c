@@ -27,12 +27,12 @@ struct filenode {
   Returns <0, 0, or >0 if oNFirst is "less than", "equal to", or
   "greater than" pcSecond, respectively.
 */
-static int Node_compareString(const Node_T oNFirst,
-                                 const char *pcSecond) {
-   assert(oNFirst != NULL);
+int DirNode_compareString(const FileNode_T oFNFirst,
+                              const char *pcSecond){
+   assert(oFNFirst != NULL);
    assert(pcSecond != NULL);
 
-   return Path_compareString(oNFirst->oPPath, pcSecond);
+   return Path_compareString(oFNFirst->oPPath, pcSecond);
 }
 
 
@@ -48,7 +48,7 @@ static int Node_compareString(const Node_T oNFirst,
                  or oDNParent is NULL but oPPath is not of depth 1
   * ALREADY_IN_TREE if oDNParent already has a file with this path
 */
-int FileNode_new(Path_T oPPath, DirNode_T oDNParent, Node_T *poFNResult) {
+int FileNode_new(Path_T oPPath, DirNode_T oDNParent, void* pvContents, Node_T *poFNResult) {
    struct filenode *psNew;
    Path_T oPParentPath = NULL;
    Path_T oPNewPath = NULL;
@@ -83,7 +83,7 @@ int FileNode_new(Path_T oPPath, DirNode_T oDNParent, Node_T *poFNResult) {
       ulParentDepth = Path_getDepth(oPParentPath);
       ulSharedDepth = Path_getSharedPrefixDepth(psNew->oPPath,
                                                 oPParentPath);
-      /* parent must be an ancestor of child */
+      /* parent must be an ancestor of file */
       if(ulSharedDepth < ulParentDepth) {
          Path_free(psNew->oPPath);
          free(psNew);
@@ -91,7 +91,7 @@ int FileNode_new(Path_T oPPath, DirNode_T oDNParent, Node_T *poFNResult) {
          return CONFLICTING_PATH;
       }
 
-      /* parent must be exactly one level up from child */
+      /* parent must be exactly one level up from file */
       if(Path_getDepth(psNew->oPPath) != ulParentDepth + 1) {
          Path_free(psNew->oPPath);
          free(psNew);
@@ -117,16 +117,9 @@ int FileNode_new(Path_T oPPath, DirNode_T oDNParent, Node_T *poFNResult) {
          return NO_SUCH_PATH;
       }
    }
-   psNew->oDNParent = oDNParent;
 
-   /* initialize the new node */
-   psNew->oDChildren = DynArray_new(0);
-   if(psNew->oDChildren == NULL) {
-      Path_free(psNew->oPPath);
-      free(psNew);
-      *poFNResult = NULL;
-      return MEMORY_ERROR;
-   }
+   psNew->oDNParent = oDNParent;
+   psNew->pvContents = pvContents;
 
    /* Link into parent's files list */
    if(oFNParent != NULL) {
@@ -147,9 +140,8 @@ int FileNode_new(Path_T oPPath, DirNode_T oDNParent, Node_T *poFNResult) {
 }
 
 /*
-  Destroys and frees all memory allocated for the subtree rooted at
-  oNNode, i.e., deletes this node and all its descendents. Returns the
-  number of nodes deleted.
+  Destroys and frees all memory allocated for the file oFNNode.
+  Returns the number of nodes deleted.
 */
 size_t FileNode_free(FileNode_T oFNNode) {
    size_t ulIndex;
@@ -183,7 +175,7 @@ Path_T FileNode_getPath(Node_T oFNNode) {
    return oFNNode->oPPath;
 }
 
-/* Returns the parent node of oFNNode. */
+/* Returns the parent node of oFNNode, which must be a DirNode */
 DirNode_T FileNode_getParent(FileNode_T oFNNode) {
    assert(oFNNode != NULL);
 

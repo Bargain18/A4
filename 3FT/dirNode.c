@@ -39,13 +39,24 @@ static int DirNode_addChild(DirNode_T oDNParent, DirNode_T oDNChild,
       return MEMORY_ERROR;
 }
 
+int DirNode_addFile(DirNode_T oDNParent, FileNode_F oFNFile,
+                           size_t ulIndex) {
+   assert(oDNParent != NULL);
+   assert(oFNFile != NULL);
+
+   if (DynArray_addAt(oDNParent->oDFiles, ulIndex, oFNFile))
+      return SUCCESS;
+   else
+      return MEMORY_ERROR
+}
+
 /*
-  Compares the string representation of oNfirst with a string
+  Compares the string representation of oDNfirst with a string
   pcSecond representing a node's path.
   Returns <0, 0, or >0 if oNFirst is "less than", "equal to", or
   "greater than" pcSecond, respectively.
 */
-static int DirNode_compareString(const DNode_T oDNFirst,
+static int DirNode_compareString(const DirNode_T oDNFirst,
                                  const char *pcSecond) {
    assert(oDNFirst != NULL);
    assert(pcSecond != NULL);
@@ -56,8 +67,8 @@ static int DirNode_compareString(const DNode_T oDNFirst,
 
 /*
   Creates a new node with path oPPath and parent oDNParent.  Returns an
-  int SUCCESS status and sets *poNResult to be the new node if
-  successful. Otherwise, sets *poNResult to NULL and returns status:
+  int SUCCESS status and sets *poDNResult to be the new node if
+  successful. Otherwise, sets *poDNResult to NULL and returns status:
   * MEMORY_ERROR if memory could not be allocated to complete request
   * CONFLICTING_PATH if oDNParent's path is not an ancestor of oPPath
   * NO_SUCH_PATH if oPPath is of depth 0
@@ -147,7 +158,7 @@ int DirNode_new(Path_T oPPath, DirNode_T oDNParent, DirNode_T *poDNResult){
 
    /* Link into parent's children list */
    if(oDNParent != NULL) {
-      iStatus = Node_addChild(oDNParent, psNew, ulIndex);
+      iStatus = DirNode_addChild(oDNParent, psNew, ulIndex);
       if(iStatus != SUCCESS) {
          Path_free(psNew->oPPath);
          free(psNew);
@@ -190,6 +201,7 @@ size_t DirNode_free(DirNode_T oDNNode) {
    while (DynArray_getLength(oDNNode->oDFiles) != 0) {
       ulCount += FileNode_free(DynArray_get(oDNNode->oDFiles, 0));
    }
+   DynArray_free(oDNNode->oDFiles);
 
    /* remove path */
    Path_free(oDNNode->oPPath);
@@ -215,7 +227,7 @@ boolean DirNode_hasChild(DirNode_T oDNParent, Path_T oPPath,
    /* *pulChildID is the index into oDNParent->oDChildren */
    return DynArray_bsearch(oDNParent->oDChildren,
             (char*) Path_getPathname(oPPath), pulChildID,
-            (int (*)(const void*,const void*)) Node_compareString);
+            (int (*)(const void*,const void*)) DirNode_compareString);
 }
 
 size_t DirNode_getNumChildren(DirNode_T oDNParent) {
@@ -241,13 +253,48 @@ int DirNode_getChild(DirNode_T oDNParent, size_t ulChildID,
    }
 }
 
-DirNode_T DirNode_getParent(DirNode_T oNNode) {
+boolean DirNode_hasFile(DirNode_T oDNParent, Path_T oPPath,
+                         size_t *pulFileID) {
+   assert(oDNParent != NULL);
+   assert(oPPath != NULL);
+   assert(pulFileID != NULL);
+
+   /* *pulFileID is the index into oDNParent->oDFiles */
+   return DynArray_bsearch(oDNParent->oDFiles,
+            (char*) Path_getPathname(oPPath), pulFileID,
+            (int (*)(const void*,const void*)) FileNode_compareString);
+}
+
+size_t DirNode_getNumFiles(DirNode_T oDNParent) {
+   assert(oDNParent != NULL);
+
+   return DynArray_getLength(oDNParent->oDFiles);
+}
+
+int DirNode_getFile(DirNode_T oDNParent, size_t ulFileID,
+                  FileNode_T *poFNResult); {
+   assert(oDNParent != NULL);
+   assert(poDNResult != NULL);
+
+   /* ulFileID is the index into oDNParent->oDFiles */
+   if(ulFileID >= DirNode_getNumFiles(oDNParent)) {
+      *poFNResult = NULL;
+      return NO_SUCH_PATH;
+   }
+   else {
+      *poFNResult = DynArray_get(oDNParent->odFiles, ulFileID);
+      return SUCCESS;
+   }
+}
+
+
+DirNode_T DirNode_getParent(DirNode_T oDNNode) {
    assert(oDNNode != NULL);
 
    return oDNNode->oDNParent;
 }
 
-int DirNode_compare(DirNode_T oNFirst, DirNode_T oNSecond) {
+int DirNode_compare(DirNode_T oDNFirst, DirNode_T oDNSecond) {
    assert(oDNFirst != NULL);
    assert(oDNSecond != NULL);
 

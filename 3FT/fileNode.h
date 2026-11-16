@@ -51,4 +51,12 @@ int FileNode_compare(FileNode_T oFNFirst, FileNode_T oFNSecond);
 */
 char *FileNode_toString(FileNode_T oFNNode);
 
+/*
+  Compares the string representation of oFNfirst with a string
+  pcSecond representing a node's path.
+  Returns <0, 0, or >0 if oNFirst is "less than", "equal to", or
+  "greater than" pcSecond, respectively.
+*/
+int FileNode_compareString(const FileNode_T oFNFirst, const char *pcSecond);
+
 #endif
