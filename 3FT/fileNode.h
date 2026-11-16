@@ -1,14 +1,9 @@
 /*--------------------------------------------------------------------*/
-/* nodeFT.h                                                           */
+/* fileNode.h                                                         */
 /* Authors: Michael Wei, Lakshit Ahuja                                */
 /*--------------------------------------------------------------------*/
-
-#ifndef NODE_INCLUDED
-#define NODE_INCLUDED
-
-#include <stddef.h>
-#include "a4def.h"
-#include "path.h"
+#ifndef DIRECTORYFILETREES_FILENODE_H
+#define DIRECTORYFILETREES_FILENODE_H
 
 /* A Node_T is a node in a File Tree */
 typedef struct node *Node_T;

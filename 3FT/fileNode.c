@@ -1,5 +1,5 @@
 /*--------------------------------------------------------------------*/
-/* nodeFT.c                                                           */
+/* fileNode.c                                                         */
 /* Authors: Michael Wei, Lakshit Ahuja                                */
 /*--------------------------------------------------------------------*/
 
@@ -7,7 +7,7 @@
 #include <assert.h>
 #include <string.h>
 #include "dynarray.h"
-#include "nodeFT.h"
+#include "fileNode.h"
 
 /*denoting the type of a given node*/
 enum nodeType {FILE, DIRECTORY};
