@@ -66,7 +66,7 @@ int DirNode_getChild(DirNode_T oNParent, size_t ulChildID,
   FALSE if it does not.
 
   If oDNParent has such a file, stores in *pulFileID the file's
-  identifier (as used in DIrNode_getFile). If oDNParent does not have
+  identifier (as used in DirNode_getFile). If oDNParent does not have
   such a file, stores in *pulFileID the identifier that such a
   file _would_ have if inserted.
 */
