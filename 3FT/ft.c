@@ -336,7 +336,7 @@ int FT_insertDir(const char *pcPath) {
    }
 
    Path_free(oPPath);
-   /* update DT state variables to reflect insertion */
+   /* update FT state variables to reflect insertion */
    if(oDNRoot == NULL)
       oDNRoot = oDNFirstNew;
    ulCount += ulNewNodes;
@@ -375,7 +375,7 @@ int FT_rmDir(const char *pcPath) {
 
    assert(pcPath != NULL);
 
-   iStatus = DT_findDirNode(pcPath, &oDNFound);
+   iStatus = FT_findDirNode(pcPath, &oDNFound);
    if(iStatus != SUCCESS)
       return iStatus;
 
@@ -540,7 +540,13 @@ int FT_insertFile(const char *pcPath, void *pvContents,
   pcPath and FALSE if not or if there is an error while checking.
 */
 boolean FT_containsFile(const char *pcPath) {
+   int iStatus;
+   FileNode_T oFNFound = NULL;
 
+   assert(pcPath != NULL);
+
+   iStatus = FT_findFileNode(pcPath, &oFNFound);
+   return (boolean) (iStatus == SUCCESS);
 }
 
 /*
@@ -555,7 +561,18 @@ boolean FT_containsFile(const char *pcPath) {
   * MEMORY_ERROR if memory could not be allocated to complete request
 */
 int FT_rmFile(const char *pcPath) {
+   int iStatus;
+   FileNode_T oFNFound = NULL;
 
+   assert(pcPath != NULL);
+
+   iStatus = FT_findFileNode(pcPath, &oFNFound);
+   if(iStatus != SUCCESS)
+      return iStatus;
+
+   ulCount -= FileNode_free(oFNFound);
+
+   return SUCCESS;
 }
 
 /*
@@ -566,7 +583,16 @@ int FT_rmFile(const char *pcPath) {
   contains check, because the contents of a file may be NULL.
 */
 void *FT_getFileContents(const char *pcPath) {
+   int iStatus;
+   FileNode_T oFNFound = NULL;
 
+   assert(pcPath != NULL);
+
+   iStatus = FT_findFileNode(pcPath, &oFNFound);
+   if(iStatus != SUCCESS)
+      return NULL;
+
+   return FileNode_getContents(oFNFound);
 }
 
 /*
@@ -577,7 +603,16 @@ void *FT_getFileContents(const char *pcPath) {
 */
 void *FT_replaceFileContents(const char *pcPath, void *pvNewContents,
                              size_t ulNewLength) {
+   int iStatus;
+   FileNode_T oFNFound = NULL;
 
+   assert(pcPath != NULL);
+
+   iStatus = FT_findFileNode(pcPath, &oFNFound);
+   if(iStatus != SUCCESS)
+      return iStatus;
+
+   return FileNode_replaceContents(oFNFound, pvNewContents);
 }
 
 /*

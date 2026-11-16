@@ -25,7 +25,7 @@ int FileNode_new(Path_T oPPath, DirNode_T oDNParent, Node_T *poFNResult);
 /*
   Destroys and frees all memory allocated for the subtree rooted at
   oNNode, i.e., deletes this node and all its descendents. Returns the
-  number of nodes deleted.
+  number of nodes deleted, which is always one.
 */
 size_t FileNode_free(FileNode_T oFNNode);
 
@@ -34,6 +34,13 @@ Path_T FileNode_getPath(Node_T oFNNode);
 
 /* Returns the parent node of oFNNode. */
 DirNode_T FileNode_getParent(FileNode_T oFNNode);
+
+/* Returns a pointer to the file contents of oFNNode */
+void *FileNode_getContents(FileNode_T oFNNode);
+
+/* Replaces file contents of oFNNode with newContents
+   Returns original file contents */
+void *FileNode_replaceContents(FileNode_T oFNNode, void* pvNewContents);
 
 /*
   Compares oFNFirst and oFNSecond lexicographically based on their paths.

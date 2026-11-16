@@ -182,6 +182,23 @@ DirNode_T FileNode_getParent(FileNode_T oFNNode) {
    return oFNNode->oDNParent;
 }
 
+/* Returns a pointer to the file contents of oFNNode */
+void *FileNode_getContents(FileNode_T oFNNode) {
+   assert(oFNNode != NULL);
+   return oFNNode->pvContents;
+}
+
+/* Replaces file contents of oFNNode with newContents
+   Returns original file contents */
+void *FileNode_replaceContents(FileNode_T oFNNode, void* pvNewContents) {
+   void* pvOrigContents;
+   assert(oFNNode != NULL);
+
+   pvOrigContents = oFNNode->pvContents;
+   oFNNode->pvContents = pvNewContents;
+   return pvOrigContents;
+}
+
 /*
   Compares oFNFirst and oFNSecond lexicographically based on their paths.
   Returns <0, 0, or >0 if oFNFirst is "less than", "equal to", or
