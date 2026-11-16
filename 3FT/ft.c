@@ -517,7 +517,7 @@ int FT_insertFile(const char *pcPath, void *pvContents,
    }
 
    /* Insert new file at final level */
-   iStatus = FileNode_new(oPPath, oDNCurr, &oFNResult);
+   iStatus = FileNode_new(oPPath, oDNCurr, pvContents, ulLength, &oFNResult);
    if(iStatus != SUCCESS) {
       Path_free(oPPath);
       if(oDNFirstNew != NULL)
@@ -659,7 +659,17 @@ int FT_init(void) {
   and SUCCESS otherwise.
 */
 int FT_destroy(void) {
+   if(!bIsInitialized)
+      return INITIALIZATION_ERROR;
 
+   if(oDNRoot) {
+      ulCount -= DirNode_free(oDNRoot);
+      oDNRoot = NULL;
+   }
+
+   bIsInitialized = FALSE;
+
+   return SUCCESS;
 }
 
 /*

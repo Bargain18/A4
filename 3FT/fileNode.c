@@ -18,6 +18,8 @@ struct filenode {
    DirNode_T oDNParent;
    /* contents of file */
    void* pvContents;
+   /* size of contents of file */
+   size_t ulContentsLength;
 };
 
 
@@ -48,7 +50,7 @@ int DirNode_compareString(const FileNode_T oFNFirst,
                  or oDNParent is NULL but oPPath is not of depth 1
   * ALREADY_IN_TREE if oDNParent already has a file with this path
 */
-int FileNode_new(Path_T oPPath, DirNode_T oDNParent, void* pvContents, Node_T *poFNResult) {
+int FileNode_new(Path_T oPPath, DirNode_T oDNParent, void* pvContents, size_t ulContentsLength, Node_T *poFNResult) {
    struct filenode *psNew;
    Path_T oPParentPath = NULL;
    Path_T oPNewPath = NULL;
@@ -120,6 +122,7 @@ int FileNode_new(Path_T oPPath, DirNode_T oDNParent, void* pvContents, Node_T *p
 
    psNew->oDNParent = oDNParent;
    psNew->pvContents = pvContents;
+   psNew->ulContentsLength = ulContentsLength;
 
    /* Link into parent's files list */
    if(oFNParent != NULL) {
