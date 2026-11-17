@@ -129,6 +129,7 @@ express your disagreement after each warning. If there are no
 warnings, then write "None."
 
 
+
 ------------------------------------------------------------------------
 What warnings does critTer generate on your Part 3 code, and what are
 your disagreements with them? Copy the critTer warnings here, and
@@ -141,11 +142,8 @@ dirNode.c:
     this file contains 16 functions
         This falls into Exceptions.
 fileNode.c:
-    fileNode.c: line 39: medium priority:
-    Do you want to validate 'pvContents' through an assert?
-
-    fileNode.c: line 187: medium priority:
-    Do you want to validate 'pvNewContents' through an assert?
+    two content asserts, fill in line numbers later
+ft.c:
 
 
 ------------------------------------------------------------------------

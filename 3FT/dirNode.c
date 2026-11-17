@@ -66,95 +66,93 @@ static int DirNode_compareString(const DirNode_T oDNFirst,
   * ALREADY_IN_TREE if oDNParent already has a child with this path
 */
 int DirNode_new(Path_T oPPath, DirNode_T oDNParent, DirNode_T *poDNResult){
-   struct dirNode *psNew;
-   Path_T oPParentPath = NULL;
-   Path_T oPNewPath = NULL;
-   size_t ulParentDepth;
-   size_t ulIndex;
-   int iStatus;
+   	struct dirNode *psNew;
+   	Path_T oPParentPath = NULL;
+   	Path_T oPNewPath = NULL;
+   	size_t ulParentDepth;
+   	int iStatus;
 
-   assert(oPPath != NULL);
-   assert(poDNResult != NULL);
+   	assert(oPPath != NULL);
+   	assert(poDNResult != NULL);
 
-   /* allocate space for a new node */
-   psNew = malloc(sizeof(struct dirNode));
-   if(psNew == NULL) {
-      *poDNResult = NULL;
-      return MEMORY_ERROR;
-   }
+   	/* allocate space for a new node */
+   	psNew = malloc(sizeof(struct dirNode));
+   	if(psNew == NULL) {
+      	*poDNResult = NULL;
+      	return MEMORY_ERROR;
+   	}
 
-   /* set the new node's path */
-   iStatus = Path_dup(oPPath, &oPNewPath);
-   if(iStatus != SUCCESS) {
-      free(psNew);
-      *poDNResult = NULL;
-      return iStatus;
-   }
-   psNew->oPPath = oPNewPath;
+   	/* set the new node's path */
+   	iStatus = Path_dup(oPPath, &oPNewPath);
+   	if(iStatus != SUCCESS) {
+      	free(psNew);
+      	*poDNResult = NULL;
+      	return iStatus;
+   	}
+   	psNew->oPPath = oPNewPath;
 
-   /* validate and set the new node's parent */
-   if(oDNParent != NULL) {
-      size_t ulSharedDepth;
+   	/* validate and set the new node's parent */
+   	if(oDNParent != NULL) {
+      	size_t ulSharedDepth;
+		size_t ulIndex;
 
-      oPParentPath = oDNParent->oPPath;
-      ulParentDepth = Path_getDepth(oPParentPath);
-      ulSharedDepth = Path_getSharedPrefixDepth(psNew->oPPath,
+      	oPParentPath = oDNParent->oPPath;
+      	ulParentDepth = Path_getDepth(oPParentPath);
+      	ulSharedDepth = Path_getSharedPrefixDepth(psNew->oPPath,
                                                 oPParentPath);
-      /* parent must be an ancestor of child */
-      if(ulSharedDepth < ulParentDepth) {
-         Path_free(psNew->oPPath);
-         free(psNew);
-         *poDNResult = NULL;
-         return CONFLICTING_PATH;
-      }
+      	/* parent must be an ancestor of child */
+      	if(ulSharedDepth < ulParentDepth) {
+         	Path_free(psNew->oPPath);
+         	free(psNew);
+         	*poDNResult = NULL;
+         	return CONFLICTING_PATH;
+      	}
 
-      /* parent must be exactly one level up from child */
-      if(Path_getDepth(psNew->oPPath) != ulParentDepth + 1) {
-         Path_free(psNew->oPPath);
-         free(psNew);
-         *poDNResult = NULL;
-         return NO_SUCH_PATH;
-      }
+      	/* parent must be exactly one level up from child */
+      	if(Path_getDepth(psNew->oPPath) != ulParentDepth + 1) {
+         	Path_free(psNew->oPPath);
+         	free(psNew);
+         	*poDNResult = NULL;
+         	return NO_SUCH_PATH;
+      	}
 
       /* parent must not already have child with this path */
-      if(DirNode_hasChild(oDNParent, oPPath, &ulIndex)) {
-         Path_free(psNew->oPPath);
-         free(psNew);
-         *poDNResult = NULL;
-         return ALREADY_IN_TREE;
-      }
-   }
-   else {
-      /* new node must be root */
-      /* can only create one "level" at a time */
-      if(Path_getDepth(psNew->oPPath) != 1) {
-         Path_free(psNew->oPPath);
-         free(psNew);
-         *poDNResult = NULL;
-         return NO_SUCH_PATH;
-      }
-   }
-   psNew->oDNParent = oDNParent;
+      	if(DirNode_hasChild(oDNParent, oPPath, &ulIndex)) {
+         	Path_free(psNew->oPPath);
+         	free(psNew);
+         	*poDNResult = NULL;
+         	return ALREADY_IN_TREE;
+      	}
 
-   /* initialize the new node */
-   psNew->oDChildren = DynArray_new(0);
-   if(psNew->oDChildren == NULL) {
-      Path_free(psNew->oPPath);
-      free(psNew);
-      *poDNResult = NULL;
-      return MEMORY_ERROR;
-   }
+	 	/* Link into parent's children list */
+		iStatus = DirNode_addChild(oDNParent, psNew, ulIndex);
+      	if(iStatus != SUCCESS) {
+         	Path_free(psNew->oPPath);
+         	free(psNew);
+         	*poDNResult = NULL;
+         	return iStatus;
+      	}
+   	}
+   	else {
+      	/* new node must be root */
+      	/* can only create one "level" at a time */
+      	if(Path_getDepth(psNew->oPPath) != 1) {
+         	Path_free(psNew->oPPath);
+         	free(psNew);
+         	*poDNResult = NULL;
+         	return NO_SUCH_PATH;
+      	}
+   	}
+   	psNew->oDNParent = oDNParent;
 
-   /* Link into parent's children list */
-   if(oDNParent != NULL) {
-      iStatus = DirNode_addChild(oDNParent, psNew, ulIndex);
-      if(iStatus != SUCCESS) {
-         Path_free(psNew->oPPath);
-         free(psNew);
-         *poDNResult = NULL;
-         return iStatus;
-      }
-   }
+   	/* initialize the new node */
+   	psNew->oDChildren = DynArray_new(0);
+   	if(psNew->oDChildren == NULL) {
+      	Path_free(psNew->oPPath);
+      	free(psNew);
+      	*poDNResult = NULL;
+      	return MEMORY_ERROR;
+   	}
 
    *poDNResult = psNew;
    return SUCCESS;
