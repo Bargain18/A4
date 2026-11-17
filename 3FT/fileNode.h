@@ -28,7 +28,8 @@ typedef struct fileNode *FileNode_T;
                  or oDNParent is NULL but oPPath is not of depth 1
   * ALREADY_IN_TREE if oDNParent already has a file with this path
 */
-int FileNode_new(Path_T oPPath, DirNode_T oDNParent, FileNode_T *poFNResult);
+int FileNode_new(Path_T oPPath, DirNode_T oDNParent, void* pvContents,
+                     size_t ulContentsLength, FileNode_T *poFNResult);
 
 /*
   Destroys and frees all memory allocated for the subtree rooted at
@@ -43,7 +44,8 @@ Path_T FileNode_getPath(FileNode_T oFNNode);
 /* Returns the parent node of oFNNode. */
 DirNode_T FileNode_getParent(FileNode_T oFNNode);
 
-/* Returns a pointer to the file contents of oFNNode */
+/* Returns a pointer to the file contents of oFNNode
+   Fills in pulLength with length of file contents */
 void *FileNode_getContents(FileNode_T oFNNode, size_t* pulLength);
 
 /* Replaces file contents of oFNNode with newContents

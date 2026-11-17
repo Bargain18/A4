@@ -51,7 +51,7 @@ int DirNode_compareString(const FileNode_T oFNFirst,
   * ALREADY_IN_TREE if oDNParent already has a file with this path
 */
 int FileNode_new(Path_T oPPath, DirNode_T oDNParent, void* pvContents,
-                     size_t ulContentsLength, Node_T *poFNResult) {
+                     size_t ulContentsLength, FileNode_T *poFNResult) {
    struct filenode *psNew;
    Path_T oPParentPath = NULL;
    Path_T oPNewPath = NULL;
