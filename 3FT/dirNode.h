@@ -70,6 +70,13 @@ int DirNode_getChild(DirNode_T oDNParent, size_t ulChildID,
 */
 boolean DirNode_hasFile(DirNode_T oDNParent, Path_T oPPath,
                          size_t *pulFileID);
+/*
+  Links new file oFNFile into oDNParent's file array at index
+  ulIndex. Returns SUCCESS if the new child was added successfully,
+  or MEMORY_ERROR if allocation fails adding to the array.
+*/
+int DirNode_addFile(DirNode_T oDNParent, FileNode_T oFNFile,
+                           size_t ulIndex);
 
 /* Returns the number of files that oNParent has. */
 size_t DirNode_getNumFiles(DirNode_T oDNParent);

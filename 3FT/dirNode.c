@@ -26,7 +26,7 @@ struct dirNode {
 /*
   Links new child oDNChild into oDNParent's children array at index
   ulIndex. Returns SUCCESS if the new child was added successfully,
-  or MEMORY_ERROR if allocation fails adding D to the array.
+  or MEMORY_ERROR if allocation fails adding to the array.
 */
 static int DirNode_addChild(DirNode_T oDNParent, DirNode_T oDNChild,
                          size_t ulIndex) {
@@ -34,17 +34,6 @@ static int DirNode_addChild(DirNode_T oDNParent, DirNode_T oDNChild,
    assert(oDNChild != NULL);
 
    if(DynArray_addAt(oDNParent->oDChildren, ulIndex, oDNChild))
-      return SUCCESS;
-   else
-      return MEMORY_ERROR;
-}
-
-int DirNode_addFile(DirNode_T oDNParent, FileNode_T oFNFile,
-                           size_t ulIndex) {
-   assert(oDNParent != NULL);
-   assert(oFNFile != NULL);
-
-   if (DynArray_addAt(oDNParent->oDFiles, ulIndex, oFNFile))
       return SUCCESS;
    else
       return MEMORY_ERROR;
@@ -230,6 +219,17 @@ boolean DirNode_hasChild(DirNode_T oDNParent, Path_T oPPath,
             (int (*)(const void*,const void*)) DirNode_compareString);
 }
 
+int DirNode_addFile(DirNode_T oDNParent, FileNode_T oFNFile,
+                           size_t ulIndex) {
+   assert(oDNParent != NULL);
+   assert(oFNFile != NULL);
+
+   if (DynArray_addAt(oDNParent->oDFiles, ulIndex, oFNFile))
+      return SUCCESS;
+   else
+      return MEMORY_ERROR;
+}
+
 size_t DirNode_getNumChildren(DirNode_T oDNParent) {
    assert(oDNParent != NULL);
 
@@ -274,7 +274,7 @@ size_t DirNode_getNumFiles(DirNode_T oDNParent) {
 int DirNode_getFile(DirNode_T oDNParent, size_t ulFileID,
                   FileNode_T *poFNResult) {
    assert(oDNParent != NULL);
-   assert(poDNResult != NULL);
+   assert(poFNResult != NULL);
 
    /* ulFileID is the index into oDNParent->oDFiles */
    if(ulFileID >= DirNode_getNumFiles(oDNParent)) {
@@ -282,7 +282,7 @@ int DirNode_getFile(DirNode_T oDNParent, size_t ulFileID,
       return NO_SUCH_PATH;
    }
    else {
-      *poFNResult = DynArray_get(oDNParent->odFiles, ulFileID);
+      *poFNResult = DynArray_get(oDNParent->oDFiles, ulFileID);
       return SUCCESS;
    }
 }
