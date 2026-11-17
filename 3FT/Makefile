@@ -6,7 +6,7 @@
 all: ft
 
 ft: ft.o ft_client.o fileNode.o dirNode.o dynarray.o path.o
-	gcc217 ft.o ft_client.o fileNode.o dirNode.o dynarray.o path.o -o ft
+	gcc217 ft_client.o ft.o fileNode.o dirNode.o dynarray.o path.o -o ft
 
 ft.o: ft.c ft.h types.h dirNode.h fileNode.h path.h dynarray.h a4def.h
 	gcc217 -c ft.c

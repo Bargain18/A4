@@ -45,7 +45,7 @@ int FileNode_new(Path_T oPPath, DirNode_T oDNParent, void* pvContents,
    int iStatus;
 
    assert(oPPath != NULL);
-   assert(oDNParent == NULL);
+   assert(poFNResult != NULL);
 
    /* allocate space for a new node */
    psNew = malloc(sizeof(struct fileNode));

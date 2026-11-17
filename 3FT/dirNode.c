@@ -74,7 +74,7 @@ int DirNode_new(Path_T oPPath, DirNode_T oDNParent, DirNode_T *poDNResult){
    int iStatus;
 
    assert(oPPath != NULL);
-   assert(oDNParent == NULL);
+   assert(poDNResult != NULL);
 
    /* allocate space for a new node */
    psNew = malloc(sizeof(struct dirNode));
@@ -157,9 +157,6 @@ int DirNode_new(Path_T oPPath, DirNode_T oDNParent, DirNode_T *poDNResult){
    }
 
    *poDNResult = psNew;
-
-   assert(oDNParent == NULL);
-
    return SUCCESS;
 }
 
