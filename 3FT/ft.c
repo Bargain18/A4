@@ -39,7 +39,7 @@ static size_t ulCount;
   * CONFLICTING_PATH if the root's path is not a prefix of oPPath
   * MEMORY_ERROR if memory could not be allocated to complete request
 */
-static int FT_traverseDirPath(Path_T oPPath, Node_T *poDNFurthest) {
+static int FT_traverseDirPath(Path_T oPPath, DirNode_T *poDNFurthest) {
    int iStatus;
    Path_T oPPrefix = NULL;
    DirNode_T oDNCurr;
@@ -152,7 +152,7 @@ static int FT_findDirNode(const char *pcPath, DirNode_T *poDNResult) {
    }
 
    Path_free(oPPath);
-   *poNResult = oDNFound;
+   *poDNResult = oDNFound;
    return SUCCESS;
 }
 
@@ -169,7 +169,7 @@ static int FT_findDirNode(const char *pcPath, DirNode_T *poDNResult) {
 static int FT_findFileNode(const char *pcPath, FileNode_T *poFNResult) {
    Path_T oPPath = NULL;
    FileNode_T oFNFound = NULL;
-   DirNode_T oDNClosest = NULL
+   DirNode_T oDNClosest = NULL;
    int iStatus;
    boolean bInside;
    size_t ulFileID;
@@ -692,7 +692,7 @@ int FT_init(void) {
       return INITIALIZATION_ERROR;
 
    bIsInitialized = TRUE;
-   oNRoot = NULL;
+   oDNRoot = NULL;
    ulCount = 0;
 
    return SUCCESS;
@@ -747,9 +747,9 @@ static size_t FT_preOrderTraversal(DirNode_T oDNNode, DynArray_T d, size_t i) {
 
       	for(c = 0; c < DirNode_getNumChildren(oDNNode); c++) {
          	DirNode_T oDNChild = NULL;
-         	iStatus = DirNode_getChild(oDNNode, c, &oNChild);
+         	iStatus = DirNode_getChild(oDNNode, c, &oDNChild);
          	assert(iStatus == SUCCESS);
-         	i = DT_preOrderTraversal(oNChild, d, i);
+         	i = FT_preOrderTraversal(oDNChild, d, i);
       	}
    	}
    	return i;
@@ -802,7 +802,7 @@ char *FT_toString(void) {
 		return NULL;
 
 	strings = DynArray_new(ulCount);
-    (void) DT_preOrderTraversal(oDNRoot, strings, 0);
+    (void) FT_preOrderTraversal(oDNRoot, strings, 0);
 
    	DynArray_map(strings, (void (*)(void *, void*)) FT_strlenAccumulate,
                 (void*) &ulTotalLength);

@@ -9,6 +9,7 @@
 #include "a4def.h"
 #include "path.h"
 #include "fileNode.h"
+#include "dirNode.h
 
 /* A FileNode_T is a filenode in a File Tree */
 typedef struct filenode *FileNode_T;
@@ -25,7 +26,7 @@ typedef struct filenode *FileNode_T;
                  or oDNParent is NULL but oPPath is not of depth 1
   * ALREADY_IN_TREE if oDNParent already has a file with this path
 */
-int FileNode_new(Path_T oPPath, DirNode_T oDNParent, Node_T *poFNResult);
+int FileNode_new(Path_T oPPath, DirNode_T oDNParent, FileNode_T *poFNResult);
 
 /*
   Destroys and frees all memory allocated for the subtree rooted at
@@ -35,7 +36,7 @@ int FileNode_new(Path_T oPPath, DirNode_T oDNParent, Node_T *poFNResult);
 size_t FileNode_free(FileNode_T oFNNode);
 
 /* Returns the path object representing oFNNode's absolute path. */
-Path_T FileNode_getPath(Node_T oFNNode);
+Path_T FileNode_getPath(FileNode_T oFNNode);
 
 /* Returns the parent node of oFNNode. */
 DirNode_T FileNode_getParent(FileNode_T oFNNode);
@@ -45,8 +46,8 @@ void *FileNode_getContents(FileNode_T oFNNode, size_t* pulLength);
 
 /* Replaces file contents of oFNNode with newContents
    Returns original file contents */
-void *FileNode_replaceContents(FileNode_T oFNNode, void* pvNewContents
-    size_t ulNewLength);
+void *FileNode_replaceContents(FileNode_T oFNNode, void* pvNewContents,
+	size_t ulNewLength);
 
 /*
   Compares the string representation of oFNFirst with a string
