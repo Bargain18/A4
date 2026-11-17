@@ -39,7 +39,7 @@ static int DirNode_addChild(DirNode_T oDNParent, DirNode_T oDNChild,
       return MEMORY_ERROR;
 }
 
-int DirNode_addFile(DirNode_T oDNParent, FileNode_F oFNFile,
+int DirNode_addFile(DirNode_T oDNParent, FileNode_T oFNFile,
                            size_t ulIndex) {
    assert(oDNParent != NULL);
    assert(oFNFile != NULL);
