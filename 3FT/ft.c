@@ -165,6 +165,7 @@ static int FT_findDirNode(const char *pcPath, DirNode_T *poDNResult) {
   * BAD_PATH if pcPath does not represent a well-formatted path
   * CONFLICTING_PATH if the root's path is not a prefix of pcPath
   * NO_SUCH_PATH if no FileNode with pcPath exists in the hierarchy
+  * NOT_A_FILE if the node at pcPath is a directory
   * MEMORY_ERROR if memory could not be allocated to complete request
  */
 static int FT_findFileNode(const char *pcPath, FileNode_T *poFNResult) {
@@ -189,6 +190,7 @@ static int FT_findFileNode(const char *pcPath, FileNode_T *poFNResult) {
       return iStatus;
    }
 
+	/* find closest directory to given file's path */
    iStatus = FT_traverseDirPath(oPPath, &oDNClosest);
    if(iStatus != SUCCESS)
    {
@@ -197,6 +199,14 @@ static int FT_findFileNode(const char *pcPath, FileNode_T *poFNResult) {
       return iStatus;
    }
 
+	/* check if found DirNode is wanted path */
+	if(Path_comparePath(DirNode_getPath(oDNClosest), oPPath) == 0) {
+		Path_free(oPPath);
+		*poFNResult = NULL;
+		return NOT_A_FILE;
+	}
+
+	/* found node should be parent of sought file */
    bInside = DirNode_hasFile(oDNClosest, oPPath, &ulFileID);
    if(!bInside) {
       Path_free(oPPath);
@@ -241,6 +251,7 @@ static void *FT_getFileContentsSize(const char *pcPath, size_t* pulLength) {
    	FileNode_T oFNFound = NULL;
 
    	assert(pcPath != NULL);
+	assert(pulLength != NULL);
 
    	iStatus = FT_findFileNode(pcPath, &oFNFound);
    	if(iStatus != SUCCESS)
@@ -657,6 +668,8 @@ int FT_stat(const char *pcPath, boolean *pbIsFile, size_t *pulSize) {
 	size_t ulFileID;
 
     assert(pcPath != NULL);
+	assert(pbIsFile != NULL);
+	assert(pulSize != NULL);
 
     if(!bIsInitialized) {
         return INITIALIZATION_ERROR;
@@ -772,10 +785,11 @@ static size_t FT_preOrderTraversal(DirNode_T oDNNode, DynArray_T d, size_t i) {
   oNNode's path, and also always adds one addition byte to the sum.
 */
 static void FT_strlenAccumulate(char* str, size_t *pulAcc) {
-   assert(pulAcc != NULL);
+   	assert(pulAcc != NULL);
+	assert(str != NULL);
 
-   if(str != NULL)
-      *pulAcc += (strlen(str) + 1);
+   	if(str != NULL)
+      	*pulAcc += (strlen(str) + 1);
 }
 
 /*
@@ -784,12 +798,13 @@ static void FT_strlenAccumulate(char* str, size_t *pulAcc) {
   newline at the end of the concatenated string.
 */
 static void FT_strcatAccumulate(char* str, char *pcAcc) {
-   assert(pcAcc != NULL);
+   	assert(pcAcc != NULL);
+	assert(str != NULL);
 
-   if(str != NULL) {
-      strcat(pcAcc, str);
-      strcat(pcAcc, "\n");
-   }
+   	if(str != NULL) {
+      	strcat(pcAcc, str);
+      	strcat(pcAcc, "\n");
+   	}
 }
 
 /*
