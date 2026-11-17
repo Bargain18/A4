@@ -11,10 +11,10 @@
 
 /* A DirNode_T is a directory node in a File Tree*/
 struct dirNode;
-typedef struct dirnode *DirNode_T;
+typedef struct dirNode *DirNode_T;
 
 /* A FileNode_T is a filenode in a File Tree */
-typedef struct filenode *FileNode_T;
+typedef struct fileNode *FileNode_T;
 
 /*
   Creates a new fileNode in the File Tree, with path oPPath and

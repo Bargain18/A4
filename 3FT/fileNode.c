@@ -11,7 +11,7 @@
 #include "dirNode.h"
 
 /* A file Node in a FT */
-struct filenode {
+struct fileNode {
    /* the object corresponding to the node's absolute path */
    Path_T oPPath;
    /* this node's parent directory */

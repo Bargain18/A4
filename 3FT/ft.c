@@ -212,7 +212,7 @@ static int FT_findFileNode(const char *pcPath, FileNode_T *poFNResult) {
 
    if(Path_comparePath(FileNode_getPath(oFNFound), oPPath) != 0) {
       Path_free(oPPath);
-      *poDNResult = NULL;
+      *poFNResult = NULL;
       return NO_SUCH_PATH;
    }
 
@@ -461,7 +461,7 @@ int FT_insertFile(const char *pcPath, void *pvContents,
       Path_T oPPrefix = NULL;
       DirNode_T oDNNewNode = NULL;
       boolean isFile;
-      size_t ulID;
+      size_t ulID = 0;
 
       /* generate a Path_T for this level */
       iStatus = Path_prefix(oPPath, ulIndex, &oPPrefix);
