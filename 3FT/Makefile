@@ -12,17 +12,17 @@ clean:
 	rm -f $(TARGETS) meminfo*.out
 
 
-ft.o: ft.c ft.h dirNode.h fileNode.h path.h dynarray.h a4def.h
-	gcc217 ft.c
+ft.o: ft.c ft.h types.h dirNode.h fileNode.h path.h dynarray.h a4def.h
+	gcc217 -c ft.c
 
-fileNode.o: fileNode.c fileNode.h dirNode.h dynarray.h path.h a4def.h
-	gcc217 fileNode.c
+fileNode.o: fileNode.c fileNode.h types.h dirNode.h dynarray.h path.h a4def.h
+	gcc217 -c fileNode.c
 
-dirNode.o: dirNode.c dirNode.h fileNode.h dynarray.h path.h a4def.h
-	gcc217 dirNode.c
+dirNode.o: dirNode.c dirNode.h types.h fileNode.h dynarray.h path.h a4def.h
+	gcc217 -c dirNode.c
 
 dynarray.o: dynarray.c dynarray.h
-	gcc217 dynarray.c
+	gcc217 -c dynarray.c
 
 path.o: path.c dynarray.h path.h a4def.h
 	gcc217 -c path.c
