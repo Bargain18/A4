@@ -611,7 +611,7 @@ void *FT_replaceFileContents(const char *pcPath, void *pvNewContents,
 
    iStatus = FT_findFileNode(pcPath, &oFNFound);
    if(iStatus != SUCCESS)
-      return iStatus;
+      return NULL;
 
    return FileNode_replaceContents(oFNFound, pvNewContents, ulNewLength);
 }
@@ -641,7 +641,6 @@ int FT_stat(const char *pcPath, boolean *pbIsFile, size_t *pulSize) {
 	size_t ulFileID;
 
     assert(pcPath != NULL);
-    assert(poFNResult != NULL);
 
     if(!bIsInitialized) {
         *poFNResult = NULL;
@@ -662,7 +661,7 @@ int FT_stat(const char *pcPath, boolean *pbIsFile, size_t *pulSize) {
 		return iStatus;
    	}
 
-	bDir = Path_comparePath(DirNode_getPath(oDNFound), oPPath) == 0;
+	bDir = Path_comparePath(DirNode_getPath(oDNClosest), oPPath) == 0;
 	if(bDir) {
 		*pbIsFile = FALSE;
 		Path_free(oPPath);
@@ -672,7 +671,7 @@ int FT_stat(const char *pcPath, boolean *pbIsFile, size_t *pulSize) {
    	bFile = DirNode_hasFile(oDNClosest, oPPath, &ulFileID);
    	if(bFile) {
 		*pbIsFile = TRUE;
-		FT_getFileContents(pcPath, pulSize);
+		(void) FT_getFileContents(pcPath, pulSize);
    		Path_free(oPPath);
         return SUCCESS;
    	}
