@@ -229,6 +229,27 @@ static int FT_findFileNode(const char *pcPath, FileNode_T *poFNResult) {
 }
 
 /*
+  Returns the contents of the file with absolute path pcPath.
+  Stores size of file contents into pulLength
+  Returns NULL if unable to complete the request for any reason.
+
+  Note: checking for a non-NULL return is not an appropriate
+  contains check, because the contents of a file may be NULL.
+*/
+static void *FT_getFileContentsSize(const char *pcPath, size_t* pulLength) {
+   	int iStatus;
+   	FileNode_T oFNFound = NULL;
+
+   	assert(pcPath != NULL);
+
+   	iStatus = FT_findFileNode(pcPath, &oFNFound);
+   	if(iStatus != SUCCESS)
+      	return NULL;
+
+   	return FileNode_getContents(oFNFound, pulLength);
+}
+
+/*
    Inserts a new directory into the FT with absolute path pcPath.
    Returns SUCCESS if the new directory is inserted successfully.
    Otherwise, returns:
@@ -577,15 +598,9 @@ int FT_rmFile(const char *pcPath) {
    return SUCCESS;
 }
 
-/*
-  Returns the contents of the file with absolute path pcPath.
-  Returns NULL if unable to complete the request for any reason.
-
-  Note: checking for a non-NULL return is not an appropriate
-  contains check, because the contents of a file may be NULL.
-*/
-void *FT_getFileContents(const char *pcPath, size_t* pulLength) {
+void *FT_getFileContents(const char *pcPath) {
    	int iStatus;
+	size_t ulLength;
    	FileNode_T oFNFound = NULL;
 
    	assert(pcPath != NULL);
@@ -594,7 +609,7 @@ void *FT_getFileContents(const char *pcPath, size_t* pulLength) {
    	if(iStatus != SUCCESS)
       	return NULL;
 
-   	return FileNode_getContents(oFNFound, pulLength);
+   	return FileNode_getContents(oFNFound, &ulLength);
 }
 
 /*
@@ -668,7 +683,7 @@ int FT_stat(const char *pcPath, boolean *pbIsFile, size_t *pulSize) {
    	bFile = DirNode_hasFile(oDNClosest, oPPath, &ulFileID);
    	if(bFile) {
 		*pbIsFile = TRUE;
-		(void) FT_getFileContents(pcPath, pulSize);
+		(void) FT_getFileContentsSize(pcPath, pulSize);
    		Path_free(oPPath);
         return SUCCESS;
    	}

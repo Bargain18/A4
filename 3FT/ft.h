@@ -90,7 +90,7 @@ int FT_rmFile(const char *pcPath);
   Note: checking for a non-NULL return is not an appropriate
   contains check, because the contents of a file may be NULL.
 */
-void *FT_getFileContents(const char *pcPath, size_t* pulLength);
+void *FT_getFileContents(const char *pcPath);
 
 /*
   Replaces current contents of the file with absolute path pcPath with
