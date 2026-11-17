@@ -215,7 +215,7 @@ void *FileNode_replaceContents(FileNode_T oFNNode, void* pvNewContents,
   Returns <0, 0, or >0 if oFNFirst is "less than", "equal to", or
   "greater than" pcSecond, respectively.
 */
-int FileNode_compareFileString(const FileNode_T oFNFirst,
+int FileNode_compareString(const FileNode_T oFNFirst,
                         const char *pcSecond) {
    assert(oFNFirst != NULL);
    assert(pcSecond != NULL);
