@@ -8,6 +8,7 @@
 #include <stddef.h>
 #include "a4def.h"
 #include "path.h"
+#include "dynarray.h"
 #include "types.h"
 
 /*
@@ -81,6 +82,9 @@ size_t DirNode_getNumFiles(DirNode_T oDNParent);
 */
 int DirNode_getFile(DirNode_T oDNParent, size_t ulFileID,
 							FileNode_T *poFNResult);
+
+/* Returns DynArray_T of files of given DirNode */
+DynArray_T DirNode_getFilesArray(DirNode_T oDNParent);
 
 /*
   Returns a the parent node of oDNNode.

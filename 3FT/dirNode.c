@@ -272,7 +272,7 @@ size_t DirNode_getNumFiles(DirNode_T oDNParent) {
 }
 
 int DirNode_getFile(DirNode_T oDNParent, size_t ulFileID,
-                  FileNode_T *poFNResult); {
+                  FileNode_T *poFNResult) {
    assert(oDNParent != NULL);
    assert(poDNResult != NULL);
 
@@ -287,6 +287,11 @@ int DirNode_getFile(DirNode_T oDNParent, size_t ulFileID,
    }
 }
 
+/* Returns DynArray_T of files of given DirNode */
+DynArray_T DirNode_getFilesArray(DirNode_T oDNParent){
+	assert(oDNParent != NULL);
+	return oDNParent->oDFiles;
+}
 
 DirNode_T DirNode_getParent(DirNode_T oDNNode) {
    assert(oDNNode != NULL);

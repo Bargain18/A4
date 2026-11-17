@@ -82,7 +82,7 @@ int FileNode_new(Path_T oPPath, DirNode_T oDNParent, void* pvContents,
    if(oDNParent != NULL) {
       size_t ulSharedDepth;
 
-      oPParentPath = oDNParent->oPPath;
+      oPParentPath = DirNode_getPath(oDNParent);
       ulParentDepth = Path_getDepth(oPParentPath);
       ulSharedDepth = Path_getSharedPrefixDepth(psNew->oPPath,
                                                 oPParentPath);
@@ -103,7 +103,7 @@ int FileNode_new(Path_T oPPath, DirNode_T oDNParent, void* pvContents,
       }
 
       /* parent must not already have file with this path */
-      if(DirNode_hasFile(oNParent, oPPath, &ulIndex)) {
+      if(DirNode_hasFile(oDNParent, oPPath, &ulIndex)) {
          Path_free(psNew->oPPath);
          free(psNew);
          *poFNResult = NULL;
@@ -126,7 +126,7 @@ int FileNode_new(Path_T oPPath, DirNode_T oDNParent, void* pvContents,
    psNew->ulContentsLength = ulContentsLength;
 
    /* Link into parent's files list */
-   if(oFNParent != NULL) {
+   if(oDNParent != NULL) {
       iStatus = DirNode_addFile(oDNParent, psNew, ulIndex);
       if(iStatus != SUCCESS) {
          Path_free(psNew->oPPath);
@@ -156,11 +156,11 @@ size_t FileNode_free(FileNode_T oFNNode) {
    /* remove from parent's list */
    if(oFNNode->oDNParent != NULL) {
       if(DynArray_bsearch(
-            oFNNode->oDNParent->oDFiles,
+            DirNode_getFilesArray(oFNNode->oDNParent),
             oFNNode, &ulIndex,
             (int (*)(const void *, const void *)) FileNode_compare)
         )
-         (void) DynArray_removeAt(oFNNode->oDNParent->oDFiles, ulIndex);
+         (void) DynArray_removeAt(DirNode_getFilesArray(oFNNode->oDNParent), ulIndex);
    }
 
    /* remove path */
@@ -173,7 +173,7 @@ size_t FileNode_free(FileNode_T oFNNode) {
 }
 
 /* Returns the path object representing oFNNode's absolute path. */
-Path_T FileNode_getPath(Node_T oFNNode) {
+Path_T FileNode_getPath(FileNode_T oFNNode) {
    assert(oFNNode != NULL);
 
    return oFNNode->oPPath;
@@ -198,7 +198,7 @@ void *FileNode_getContents(FileNode_T oFNNode, size_t* pulLength) {
 
 /* Replaces file contents of oFNNode with newContents
    Returns original file contents */
-void *FileNode_replaceContents(FileNode_T oFNNode, void* pvNewContents
+void *FileNode_replaceContents(FileNode_T oFNNode, void* pvNewContents,
       size_t ulNewLength) {
    void* pvOrigContents;
    assert(oFNNode != NULL);
