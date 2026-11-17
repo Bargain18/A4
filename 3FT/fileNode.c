@@ -52,7 +52,7 @@ int DirNode_compareString(const FileNode_T oFNFirst,
 */
 int FileNode_new(Path_T oPPath, DirNode_T oDNParent, void* pvContents,
                      size_t ulContentsLength, FileNode_T *poFNResult) {
-   struct filenode *psNew;
+   struct fileNode *psNew;
    Path_T oPParentPath = NULL;
    Path_T oPNewPath = NULL;
    size_t ulParentDepth;
@@ -63,7 +63,7 @@ int FileNode_new(Path_T oPPath, DirNode_T oDNParent, void* pvContents,
    assert(oDNParent == NULL);
 
    /* allocate space for a new node */
-   psNew = malloc(sizeof(struct filenode));
+   psNew = malloc(sizeof(struct fileNode));
    if(psNew == NULL) {
       *poFNResult = NULL;
       return MEMORY_ERROR;

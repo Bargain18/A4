@@ -77,7 +77,7 @@ static int DirNode_compareString(const DirNode_T oDNFirst,
   * ALREADY_IN_TREE if oDNParent already has a child with this path
 */
 int DirNode_new(Path_T oPPath, DirNode_T oDNParent, DirNode_T *poDNResult){
-   struct dirnode *psNew;
+   struct dirNode *psNew;
    Path_T oPParentPath = NULL;
    Path_T oPNewPath = NULL;
    size_t ulParentDepth;
@@ -88,7 +88,7 @@ int DirNode_new(Path_T oPPath, DirNode_T oDNParent, DirNode_T *poDNResult){
    assert(oDNParent == NULL);
 
    /* allocate space for a new node */
-   psNew = malloc(sizeof(struct dirnode));
+   psNew = malloc(sizeof(struct dirNode));
    if(psNew == NULL) {
       *poDNResult = NULL;
       return MEMORY_ERROR;
