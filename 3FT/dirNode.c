@@ -26,7 +26,7 @@ struct dirnode {
 /*
   Links new child oDNChild into oDNParent's children array at index
   ulIndex. Returns SUCCESS if the new child was added successfully,
-  or  MEMORY_ERROR if allocation fails adding D to the array.
+  or MEMORY_ERROR if allocation fails adding D to the array.
 */
 static int DirNode_addChild(DirNode_T oDNParent, DirNode_T oDNChild,
                          size_t ulIndex) {
@@ -51,9 +51,9 @@ int DirNode_addFile(DirNode_T oDNParent, FileNode_F oFNFile,
 }
 
 /*
-  Compares the string representation of oDNfirst with a string
+  Compares the string representation of oDNFirst with a string
   pcSecond representing a node's path.
-  Returns <0, 0, or >0 if oNFirst is "less than", "equal to", or
+  Returns <0, 0, or >0 if oDNFirst is "less than", "equal to", or
   "greater than" pcSecond, respectively.
 */
 static int DirNode_compareString(const DirNode_T oDNFirst,
@@ -128,7 +128,7 @@ int DirNode_new(Path_T oPPath, DirNode_T oDNParent, DirNode_T *poDNResult){
       }
 
       /* parent must not already have child with this path */
-      if(Node_hasChild(oDNParent, oPPath, &ulIndex)) {
+      if(DirNode_hasChild(oDNParent, oPPath, &ulIndex)) {
          Path_free(psNew->oPPath);
          free(psNew);
          *poDNResult = NULL;

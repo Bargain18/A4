@@ -44,6 +44,15 @@ void *FileNode_replaceContents(FileNode_T oFNNode, void* pvNewContents
     size_t ulNewLength);
 
 /*
+  Compares the string representation of oFNFirst with a string
+  pcSecond representing a node's path.
+  Returns <0, 0, or >0 if oFNFirst is "less than", "equal to", or
+  "greater than" pcSecond, respectively.
+*/
+int FileNode_compareString(const FileNode_T oFNFirst,
+                        const char *pcSecond);
+
+/*
   Compares oFNFirst and oFNSecond lexicographically based on their paths.
   Returns <0, 0, or >0 if oFNFirst is "less than", "equal to", or
   "greater than" oFNSecond, respectively.

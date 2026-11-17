@@ -719,6 +719,69 @@ int FT_destroy(void) {
 }
 
 /*
+  Performs a pre-order traversal of the tree rooted at oDNNode,
+  inserting each payload to DynArray_T d beginning at index i.
+  Returns the next unused index in d after the insertion(s).
+*/
+static size_t FT_preOrderTraversal(DirNode_T oDNNode, DynArray_T d, size_t i) {
+   	size_t c;
+
+   	assert(d != NULL);
+
+   	if(oDNNode != NULL) {
+		int iStatus;
+		char* str = NULL;
+		str = DirNode_toString(oDNNode);
+      	(void) DynArray_set(d, i, str);
+      	i++;
+
+		for(c = 0; c < DirNode_getNumFiles(oDNNode); c++) {
+			FileNode_T oFNFile = NULL;
+			str = NULL;
+			iStatus = DirNode_getFile(oDNNode, c, &oFNFile);
+			assert(iStatus == SUCCESS);
+			str = FileNode_toString(oFNFile);
+			(void) DynArray_set(d, i, str);
+			i++;
+		}
+
+      	for(c = 0; c < DirNode_getNumChildren(oDNNode); c++) {
+         	DirNode_T oDNChild = NULL;
+         	iStatus = DirNode_getChild(oDNNode, c, &oNChild);
+         	assert(iStatus == SUCCESS);
+         	i = DT_preOrderTraversal(oNChild, d, i);
+      	}
+   	}
+   	return i;
+}
+
+/*
+  Alternate version of strlen that uses pulAcc as an in-out parameter
+  to accumulate a string length, rather than returning the length of
+  oNNode's path, and also always adds one addition byte to the sum.
+*/
+static void FT_strlenAccumulate(char* str, size_t *pulAcc) {
+   assert(pulAcc != NULL);
+
+   if(str != NULL)
+      *pulAcc += (strlen(str) + 1);
+}
+
+/*
+  Alternate version of strcat that inverts the typical argument
+  order, appending oNNode's path onto pcAcc, and also always adds one
+  newline at the end of the concatenated string.
+*/
+static void FT_strcatAccumulate(char* str, char *pcAcc) {
+   assert(pcAcc != NULL);
+
+   if(str != NULL) {
+      strcat(pcAcc, str);
+      strcat(pcAcc, "\n");
+   }
+}
+
+/*
   Returns a string representation of the
   data structure, or NULL if the structure is
   not initialized or there is an allocation error.
@@ -731,5 +794,30 @@ int FT_destroy(void) {
   which is then owned by client!
 */
 char *FT_toString(void) {
+	DynArray_T strings;
+	size_t ulTotalLength = 1;
+	char *result = NULL;
 
+	if(!bIsInitialized)
+		return NULL;
+
+	strings = DynArray_new(ulCount);
+    (void) DT_preOrderTraversal(oDNRoot, strings, 0);
+
+   	DynArray_map(strings, (void (*)(void *, void*)) FT_strlenAccumulate,
+                (void*) &ulTotalLength);
+
+   	result = malloc(ulTotalLength);
+   	if(result == NULL) {
+      	DynArray_free(strings);
+      	return NULL;
+   	}
+   	*result = '\0';
+
+   	DynArray_map(strings, (void (*)(void *, void*)) FT_strcatAccumulate,
+                (void *) result);
+
+   	DynArray_free(strings);
+
+   	return result;
 }
