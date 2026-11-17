@@ -83,7 +83,7 @@ size_t DirNode_getNumFiles(DirNode_T oDNParent);
   * NO_SUCH_PATH if ulChildID is not a valid child for oDNParent
 */
 int DirNode_getFile(DirNode_T oDNParent, size_t ulFileID,
-                  FileNode_T *poFNResult);
+							FileNode_T *poFNResult);
 
 /*
   Returns a the parent node of oDNNode.

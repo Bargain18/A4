@@ -8,7 +8,6 @@
 #include <stddef.h>
 #include "a4def.h"
 #include "path.h"
-#include "fileNode.h"
 #include "dirNode.h"
 
 /* A FileNode_T is a filenode in a File Tree */

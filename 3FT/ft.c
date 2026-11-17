@@ -79,7 +79,7 @@ static int FT_traverseDirPath(Path_T oPPath, DirNode_T *poDNFurthest) {
          *poDNFurthest = NULL;
          return iStatus;
       }
-      if(Node_hasChild(oDNCurr, oPPrefix, &ulChildID)) {
+      if(DirNode_hasChild(oDNCurr, oPPrefix, &ulChildID)) {
          /* go to that child and continue with next prefix */
          Path_free(oPPrefix);
          oPPrefix = NULL;
