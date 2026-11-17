@@ -47,7 +47,7 @@ int DirNode_addFile(DirNode_T oDNParent, FileNode_T oFNFile,
    if (DynArray_addAt(oDNParent->oDFiles, ulIndex, oFNFile))
       return SUCCESS;
    else
-      return MEMORY_ERROR
+      return MEMORY_ERROR;
 }
 
 /*
