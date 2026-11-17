@@ -8,10 +8,6 @@ all: ft
 ft: ft.o ft_client.o fileNode.o dirNode.o dynarray.o path.o
 	gcc217 ft.o ft_client.o fileNode.o dirNode.o dynarray.o path.o -o ft
 
-clean:
-	rm -f $(TARGETS) meminfo*.out
-
-
 ft.o: ft.c ft.h types.h dirNode.h fileNode.h path.h dynarray.h a4def.h
 	gcc217 -c ft.c
 
@@ -31,7 +27,3 @@ ft_client.o: ft_client.c ft.h a4def.h
 	gcc217 -c ft_client.c
 
 #checkerFT.o: checkerFT.c dynarray.h checkerDT.h nodeDT.h path.h a4def.h
-
-
-clobber: clean
-	rm -f dynarray.o path.o dt_client.o checkerDT.o nodeDTGood.o dtGood.o *~
