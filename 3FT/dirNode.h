@@ -8,10 +8,7 @@
 #include <stddef.h>
 #include "a4def.h"
 #include "path.h"
-#include "fileNode.h"
-
-/* A DirNode_T is a directory node in a File Tree */
-typedef struct dirNode *DirNode_T;
+#include "types.h"
 
 /*
   Creates a new dirNode in the File Tree, with path oPPath and
