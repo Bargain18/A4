@@ -5,18 +5,21 @@
 
 all: ft
 
-ft: ft.o ft_client.o fileNode.o dirNode.o
-	gcc217 ft.o ft_client.o -o ft
+ft: ft.o ft_client.o fileNode.o dirNode.o dynarray.o path.o
+	gcc217 ft.o ft_client.o fileNode.o dirNode.o dynarray.o path.o -o ft
 
 clean:
 	rm -f $(TARGETS) meminfo*.out
 
 
-ft.o:
+ft.o: ft.c ft.h dirNode.h fileNode.h path.h dynarray.h a4def.h
+	gcc217 ft.c
 
-fileNode.o:
+fileNode.o: fileNode.c fileNode.h dirNode.h dynarray.h path.h a4def.h
+	gcc217 fileNode.c
 
-dirNode.o:
+dirNode.o: dirNode.c dirNode.h fileNode.h dynarray.h path.h a4def.h
+	gcc217 dirNode.c
 
 dynarray.o: dynarray.c dynarray.h
 	gcc217 dynarray.c

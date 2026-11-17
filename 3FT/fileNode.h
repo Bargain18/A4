@@ -5,6 +5,11 @@
 #ifndef DIRECTORYFILETREES_FILENODE_H
 #define DIRECTORYFILETREES_FILENODE_H
 
+#include <stddef.h>
+#include "a4def.h"
+#include "path.h"
+#include "fileNode.h"
+
 /* A FileNode_T is a filenode in a File Tree */
 typedef struct filenode *FileNode_T;
 
