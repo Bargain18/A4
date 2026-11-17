@@ -14,10 +14,12 @@ struct dirNode;
 typedef struct dirNode *DirNode_T;
 
 /* A FileNode_T is a filenode in a File Tree */
+struct fileNode;
 typedef struct fileNode *FileNode_T;
 
 /*
-  Creates a new fileNode in the File Tree, with path oPPath and
+  Creates a new fileNode in the File Tree, consisting of pvContents and
+  holding size ulContentsLength and with path oPPath and
   parent oDNParent. Returns an int SUCCESS status and sets *poFNResult
   to be the new node if successful. Otherwise, sets *poFNResult to NULL
   and returns status:
@@ -33,7 +35,7 @@ int FileNode_new(Path_T oPPath, DirNode_T oDNParent, void* pvContents,
 
 /*
   Destroys and frees all memory allocated for the subtree rooted at
-  oNNode, i.e., deletes this node and all its descendents. Returns the
+  oFNNode, i.e., deletes this node and all its descendents. Returns the
   number of nodes deleted, which is always one.
 */
 size_t FileNode_free(FileNode_T oFNNode);
@@ -48,7 +50,7 @@ DirNode_T FileNode_getParent(FileNode_T oFNNode);
    Fills in pulLength with length of file contents */
 void *FileNode_getContents(FileNode_T oFNNode, size_t* pulLength);
 
-/* Replaces file contents of oFNNode with newContents
+/* Replaces file contents of oFNNode with pvNewContents and ulNewLength
    Returns original file contents */
 void *FileNode_replaceContents(FileNode_T oFNNode, void* pvNewContents,
 	size_t ulNewLength);
@@ -79,7 +81,7 @@ int FileNode_compare(FileNode_T oFNFirst, FileNode_T oFNSecond);
 char *FileNode_toString(FileNode_T oFNNode);
 
 /*
-  Compares the string representation of oFNfirst with a string
+  Compares the string representation of oFNFirst with a string
   pcSecond representing a node's path.
   Returns <0, 0, or >0 if oNFirst is "less than", "equal to", or
   "greater than" pcSecond, respectively.

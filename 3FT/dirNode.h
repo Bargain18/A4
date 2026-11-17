@@ -49,7 +49,7 @@ Path_T DirNode_getPath(DirNode_T oDNNode);
 boolean DirNode_hasChild(DirNode_T oDNParent, Path_T oPPath,
                          size_t *pulChildID);
 
-/* Returns the number of children that oNParent has. */
+/* Returns the number of children that oDNParent has. */
 size_t DirNode_getNumChildren(DirNode_T oDNParent);
 
 /*
@@ -58,7 +58,7 @@ size_t DirNode_getNumChildren(DirNode_T oDNParent);
   Otherwise, sets *poDNResult to NULL and returns status:
   * NO_SUCH_PATH if ulChildID is not a valid child for oDNParent
 */
-int DirNode_getChild(DirNode_T oNParent, size_t ulChildID,
+int DirNode_getChild(DirNode_T oDNParent, size_t ulChildID,
                   DirNode_T *poDNResult);
 
 /*
@@ -79,7 +79,7 @@ size_t DirNode_getNumFiles(DirNode_T oDNParent);
 /*
   Returns an int SUCCESS status and sets *poDNResult to be the file
   node of oDNParent with identifier ulFileID, if one exists.
-  Otherwise, sets *poDNResult to NULL and returns status:
+  Otherwise, sets *poFNResult to NULL and returns status:
   * NO_SUCH_PATH if ulChildID is not a valid child for oDNParent
 */
 int DirNode_getFile(DirNode_T oDNParent, size_t ulFileID,
