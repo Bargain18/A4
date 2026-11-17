@@ -633,11 +633,52 @@ void *FT_replaceFileContents(const char *pcPath, void *pvNewContents,
   When returning another status, *pbIsFile and *pulSize are unchanged.
 */
 int FT_stat(const char *pcPath, boolean *pbIsFile, size_t *pulSize) {
+    Path_T oPPath = NULL;
+	DirNode_T oDNClosest = NULL;
+	int iStatus;
+	boolean bFile;
+	boolean bDir;
+	size_t ulFileID;
 
-   dirnode to closest point
-   check if the dir is it
-   check if the dirs files are it
-   if so, steal contents and size
+    assert(pcPath != NULL);
+    assert(poFNResult != NULL);
+
+    if(!bIsInitialized) {
+        *poFNResult = NULL;
+        return INITIALIZATION_ERROR;
+    }
+
+	iStatus = Path_new(pcPath, &oPPath);
+	if(iStatus != SUCCESS) {
+  		*poFNResult = NULL;
+  		return iStatus;
+	}
+
+   	iStatus = FT_traverseDirPath(oPPath, &oDNClosest);
+   	if(iStatus != SUCCESS)
+   	{
+		Path_free(oPPath);
+		*poFNResult = NULL;
+		return iStatus;
+   	}
+
+	bDir = Path_comparePath(DirNode_getPath(oDNFound), oPPath) == 0;
+	if(bDir) {
+		*pbIsFile = FALSE;
+		Path_free(oPPath);
+        return SUCCESS;
+	}
+
+   	bFile = DirNode_hasFile(oDNClosest, oPPath, &ulFileID);
+   	if(bFile) {
+		*pbIsFile = TRUE;
+		FT_getFileContents(pcPath, pulSize);
+   		Path_free(oPPath);
+        return SUCCESS;
+   	}
+
+	Path_free(oPPath);
+    return NO_SUCH_PATH;
 }
 
 /*
