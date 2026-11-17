@@ -24,21 +24,6 @@ struct fileNode {
 
 
 /*
-  Compares the string representation of oNfirst with a string
-  pcSecond representing a node's path.
-  Returns <0, 0, or >0 if oNFirst is "less than", "equal to", or
-  "greater than" pcSecond, respectively.
-*/
-int DirNode_compareString(const FileNode_T oFNFirst,
-                              const char *pcSecond){
-   assert(oFNFirst != NULL);
-   assert(pcSecond != NULL);
-
-   return Path_compareString(oFNFirst->oPPath, pcSecond);
-}
-
-
-/*
   Creates a new fileNode in the File Tree, with path oPPath and
   parent oDNParent. Returns an int SUCCESS status and sets *poFNResult
   to be the new node if successful. Otherwise, sets *poFNResult to NULL

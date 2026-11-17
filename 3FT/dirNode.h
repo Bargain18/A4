@@ -78,7 +78,7 @@ boolean DirNode_hasFile(DirNode_T oDNParent, Path_T oPPath,
 int DirNode_addFile(DirNode_T oDNParent, FileNode_T oFNFile,
                            size_t ulIndex);
 
-/* Returns the number of files that oNParent has. */
+/* Returns the number of files that oDNParent has. */
 size_t DirNode_getNumFiles(DirNode_T oDNParent);
 
 /*
@@ -90,7 +90,7 @@ size_t DirNode_getNumFiles(DirNode_T oDNParent);
 int DirNode_getFile(DirNode_T oDNParent, size_t ulFileID,
 							FileNode_T *poFNResult);
 
-/* Returns DynArray_T of files of given DirNode */
+/* Returns DynArray_T of files of given DirNode oDNParent */
 DynArray_T DirNode_getFilesArray(DirNode_T oDNParent);
 
 /*
