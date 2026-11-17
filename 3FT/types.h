@@ -8,11 +8,9 @@
 #define DIRECTORYFILETREES_TYPES_H
 
 /* A DirNode_T is a directory node in a File Tree*/
-struct dirNode;
 typedef struct dirNode *DirNode_T;
 
 /* A FileNode_T is a file node in a File Tree */
-struct fileNode;
 typedef struct fileNode *FileNode_T;
 
 #endif
